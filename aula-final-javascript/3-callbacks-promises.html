@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Callbacks e Promises - Loja</title>
+<style>
+  body { font-family: sans-serif; max-width: 420px; margin: 40px auto; }
+  button { padding: 8px 14px; margin: 4px 0; cursor: pointer; display: block; }
+  #status { margin-top: 20px; padding: 12px; background: #f0f0f0; border-radius: 8px; min-height: 40px; }
+</style>
+</head>
+<body>
+  <h2>Tempo de preparo do pedido</h2>
+  <button id="b1">1) Com Callback</button>
+  <button id="b2">2) Com Promise (.then)</button>
+  <button id="b3">3) Com async/await</button>
+  <div id="status">Escolha uma opção...</div>
+
+<script>
+  const status = document.getElementById('status');
+
+  // 1) CALLBACK: função passada como argumento, executada depois
+  function prepararPedido(callback) {
+    status.textContent = 'Preparando pizza...';
+    setTimeout(() => callback('Pizza pronta!'), 2000);
+  }
+  document.getElementById('b1').onclick = () => {
+    prepararPedido((resultado) => status.textContent = resultado);
+  };
+
+  // 2) PROMISE: promete um resultado futuro (resolve) ou um erro (reject)
+  function prepararPromise(temEstoque) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        temEstoque ? resolve('Pizza pronta! 🍕') : reject('Sem ingredientes!');
+      }, 2000);
+    });
+  }
+  document.getElementById('b2').onclick = () => {
+    status.textContent = 'Preparando pizza...';
+    prepararPromise(true)
+      .then((msg) => status.textContent = msg)
+      .catch((erro) => status.textContent = 'Erro: ' + erro);
+  };
+
+  // 3) ASYNC/AWAIT: mesma Promise, escrita de forma mais legível
+  document.getElementById('b3').onclick = async () => {
+    status.textContent = 'Preparando pizza...';
+    try {
+      status.textContent = await prepararPromise(true);
+    } catch (erro) {
+      status.textContent = 'Erro: ' + erro;
+    }
+  };
+</script>
+</body>
+</html>
